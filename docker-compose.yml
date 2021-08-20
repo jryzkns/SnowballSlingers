@@ -1,0 +1,44 @@
+version: "3"
+services:
+  server:
+    ports:
+      - "5555:5555"
+      - "5556:5556"
+      - "5557:5557"
+    build: ./server/
+    image: server
+    volumes:
+      - ./server:/server
+    entrypoint: 
+      ["/bin/sh", "-c", "cd server && mvn package && mvn exec:java"]
+  client:
+    build: ./client/
+    image: client
+    environment:
+      DISPLAY: $DISPLAY
+      COMPOSE_CONVERT_WINDOWS_PATHS: 1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./client:/client
+    network_mode: host
+    depends_on:
+      - server
+    entrypoint: 
+      ["/bin/sh", "-c", "cd client && python3 -u main.py"]
+  client_extra:
+    build: ./client/
+    image: client
+    environment:
+      DISPLAY: $DISPLAY
+      COMPOSE_CONVERT_WINDOWS_PATHS: 1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./client:/client
+    network_mode: host
+    depends_on:
+      - server
+    entrypoint: 
+      ["/bin/sh", "-c", "cd client && python3 -u main.py"]
+    # https://stackoverflow.com/a/28395350/12275558
+    # remember to run `xhost +local:docker`
+    # before running client from container

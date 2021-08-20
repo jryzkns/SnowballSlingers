@@ -1,0 +1,13 @@
+backlog
+
+# MVN INTERMEDIARIES
+**/*.class
+**/target/
+
+# PYTHON INTERMEDIARIES
+**/__pycache__/
+
+# PYINSTALLER INTERMEDIARIES
+**/dist/
+**/build/
+**/*.spec
