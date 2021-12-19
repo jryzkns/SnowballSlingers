@@ -7,7 +7,7 @@ from entity import Player, Snowball
 from particles import Particles
 
 class GameSession:
-    def run_session(zmq_ctx, player_uuid):
+    def run_session(zmq_ctx, game_win, player_uuid):
 
         game_objs = {}
 
@@ -28,10 +28,6 @@ class GameSession:
         skt_subs = zmq_ctx.socket(zmq.SUB)
         skt_subs.setsockopt(zmq.SUBSCRIBE, b"U")
         skt_subs.connect(f"tcp://{ADDRESS}:{PORT_SUBS}")
-
-        pg.init()
-        game_win = pg.display.set_mode(res)
-        pg.display.set_caption(f'Playing as: {player_uuid}')
 
         game_clock, dt = pg.time.Clock(), 0
         game_clock.tick()
