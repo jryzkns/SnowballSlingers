@@ -1,15 +1,13 @@
 import pygame as pg
-
-pg.init()
-COLOR = pg.Color('red')
+from definitions import *
 
 class Button:
-    def __init__(self, w, h, text, position, font, bg='white'):
+    def __init__(self, w, h, text, position, bg='white'):
         self.x, self.y = position
         self.rect = pg.Rect(position[0], position[1], w, h)
-        self.font = pg.font.SysFont("Arial", font)
+        self.font = pg.font.Font('CaviarDreams.ttf', 20)
         self.text = text
-        self.color = COLOR
+        self.color = RED
     
     def mouse_click(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -23,5 +21,5 @@ class Button:
             return 1
         return 0
     
-    def draw_button(self, screen):
+    def draw(self, screen):
         pg.draw.rect(screen, self.color, self.rect, 2)

@@ -1,32 +1,22 @@
+from definitions import *
 import pygame as pg
 
-pg.init()
-COLOR = pg.Color('red')
+from buttonPress import Button
+from textBox import TextBox
 
-class TextBox:
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = pg.Rect(x, y, w, h)
-        self.color = COLOR
-        self.text = text
-        self.active = False
+def loginPage(login):
+    # screen = pg.display.set_mode((300, 200))
+    login.fill(INDIGO)
+    # input_box = TextBox(50, 100, 200, 32)
+    # input_box.draw(screen)
+    # button = Button(50, 20, "Click here", (50,50), 30, "white")
+    # button.draw_button(screen)
+    pg.draw.circle(login, (0,0,0), (150,150), (5))
+    pg.display.flip()
 
-    def on_user_input(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN:
-            if self.rect.collidepoint(event.pos):
-                self.active = True
-            else:
-                self.active = False
-        if event.type == pg.KEYDOWN:
-            if self.active:
-                if event.key == pg.K_RETURN:
-                    result = self.text
-                    print(result)
-                    self.text = ''
-                    return result
-                if event.key == pg.K_BACKSPACE:
-                    self.text = self.txt[:-1]
-                else:
-                    self.text += event.unicode
-    
-    def draw(self, screen):
-        pg.draw.rect(screen, self.color, self.rect, 2)
+    # done = False
+    # while not done:
+    #     for event in pg.event.get():
+    #         if event.type == pg.QUIT:
+    #             sys.exit(0)
+            

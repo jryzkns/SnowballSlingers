@@ -10,18 +10,11 @@ import pygame as pg
 from definitions import *
 from gameSession import GameSession
 from connection import Connection
-from login import *
+from textBox import *
 from buttonPress import *
 
 pg.init()
-screen = pg.display.set_mode((300, 200))
-screen.fill(INDIGO)
-input_box = TextBox(50, 100, 200, 32)
-input_box.draw(screen)
-button = Button(50, 20, "Click here", (50,50), 30, "white")
-button.draw_button(screen)
-pg.draw.circle(screen, (0,0,0), (150,150), (5))
-pg.display.flip()
+
 # done = False
 # while not done:
 #     for event in pg.event.get():
