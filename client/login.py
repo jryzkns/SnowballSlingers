@@ -34,3 +34,4 @@ def loginPage(screen):
         input_box.draw(screen)
         button.draw(screen)
         pg.display.flip()
+        

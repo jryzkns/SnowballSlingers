@@ -4,8 +4,6 @@ from definitions import *
 class TextBox(pg.Rect):
     def __init__(self, x, y, w, h, matcher = None):
         pg.Rect.__init__(self, x, y, w, h)
-        self.color_inactive = BANANA
-        self.color_active = ORANGE
         self.font = pg.font.Font(asset('CaviarDreams.ttf'), 18)
         self.text_input = ''
         self.text = self.font.render(self.text_input, True, BLACK)
@@ -15,8 +13,6 @@ class TextBox(pg.Rect):
 
     def on_mousebuttondown(self, position):
         self.active = self.collidepoint(position)
-        if self.active:
-            self.color_inactive = self.color_active
 
     def on_keydown(self, key):
         if key == pg.K_RETURN:
@@ -32,4 +28,4 @@ class TextBox(pg.Rect):
     
     def draw(self, screen):
         screen.blit(self.text, self.topleft)
-        pg.draw.rect(screen, self.color_inactive, self, 2)
+        pg.draw.rect(screen, (ORANGE if self.active else BANANA), self, 2)

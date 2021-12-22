@@ -6,14 +6,11 @@ class Button(pg.Rect):
         pg.Rect.__init__(self, *position, w, h)
         self.font = pg.font.Font(asset('CaviarDreams.ttf'), 18)
         self.text = self.font.render(text, True, BLACK)
-        self.color_inactive = BANANA
-        self.color_active = ORANGE
         self.active = False
     
     def on_mousebuttondown(self, position):
         return self.active and pg.mouse.get_pressed()[0] and self.collidepoint(*position)
     
     def draw(self, screen):
-        if self.active:
-            screen.blit(self.text, self.topleft)
-            pg.draw.rect(screen, self.color_inactive, self, 2)
+        screen.blit(self.text, self.topleft)
+        pg.draw.rect(screen, (ORANGE if self.active else BANANA), self, 2)
