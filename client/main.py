@@ -1,5 +1,4 @@
 import os
-from typing import Text
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import zmq
 import uuid
