@@ -2,26 +2,34 @@ import pygame as pg
 from definitions import *
 
 class TextBox(pg.Rect):
-    def __init__(self, x, y, w, h, text=''):
-        self.rect = pg.Rect(x, y, w, h)
-        self.color = RED
-        self.text = text
+    def __init__(self, x, y, w, h, matcher = None):
+        pg.Rect.__init__(self, x, y, w, h)
+        self.color_inactive = BANANA
+        self.color_active = ORANGE
+        self.font = pg.font.Font(asset('CaviarDreams.ttf'), 18)
+        self.text_input = ''
+        self.text = self.font.render(self.text_input, True, BLACK)
         self.active = False
+        self.matcher = matcher
+        self.valid = False
 
-    def on_user_input(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN:
-            self.active = self.rect.collidepoint(event.pos)
-        if event.type == pg.KEYDOWN:
-            if self.active:
-                if event.key == pg.K_RETURN:
-                    result = self.text
-                    print(result)
-                    self.text = ''
-                    return result
-                if event.key == pg.K_BACKSPACE:
-                    self.text = self.txt[:-1]
-                else:
-                    self.text += event.unicode
+    def on_mousebuttondown(self, position):
+        self.active = self.collidepoint(position)
+        if self.active:
+            self.color_inactive = self.color_active
+
+    def on_keydown(self, key):
+        if key == pg.K_RETURN:
+            if self.valid:
+                pass
+        else:
+            if key == pg.K_BACKSPACE:
+                self.text_input = self.text_input[:-1]
+            else:
+                self.text_input += pg.key.name(key)
+            self.text = self.font.render(self.text_input, True, BLACK)
+            self.valid = self.matcher.match(self.text_input) is not None
     
     def draw(self, screen):
-        pg.draw.rect(screen, self.color, self.rect, 2)
+        screen.blit(self.text, self.topleft)
+        pg.draw.rect(screen, self.color_inactive, self, 2)

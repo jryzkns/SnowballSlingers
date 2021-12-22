@@ -7,7 +7,7 @@ from entity import Player, Snowball
 from particles import Particles
 
 class GameSession:
-    def run_session(zmq_ctx, game_win, player_uuid):
+    def run_session(zmq_ctx, game_win, player_uuid, address):
 
         game_objs = {}
 
@@ -23,11 +23,11 @@ class GameSession:
         snowball_ded_regex = re.compile(r'([\da-f]{32})-snowball-gone')
 
         skt_hand = zmq_ctx.socket(zmq.PUSH)
-        skt_hand.connect(f"tcp://{ADDRESS}:{PORT_HAND}")
+        skt_hand.connect(f"tcp://{address}:{PORT_HAND}")
 
         skt_subs = zmq_ctx.socket(zmq.SUB)
         skt_subs.setsockopt(zmq.SUBSCRIBE, b"U")
-        skt_subs.connect(f"tcp://{ADDRESS}:{PORT_SUBS}")
+        skt_subs.connect(f"tcp://{address}:{PORT_SUBS}")
 
         game_clock, dt = pg.time.Clock(), 0
         game_clock.tick()
