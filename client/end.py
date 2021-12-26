@@ -3,7 +3,9 @@ import pygame as pg
 
 from buttonPress import Button
 
-def endScreen(screen, address):
+SHOULD_REJOIN = True
+
+def endScreen(screen):
     print("hello world")
     button_rejoin = Button(90, 30, "Rejoin", (50,130))
     backToLogin = Button(200, 30, "Return to Login Screen", (50,180))
@@ -12,17 +14,14 @@ def endScreen(screen, address):
     while not done:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                sys.exit(0)
+                return
             elif event.type == pg.MOUSEBUTTONDOWN:
-                button_rejoin.active = True
-                backToLogin.active = True
-                print("mouse button down")
+                button_rejoin.active = button_rejoin.collidepoint(*event.pos)
+                backToLogin.active = backToLogin.collidepoint(*event.pos)
                 if button_rejoin.on_mousebuttondown(event.pos):
-                    print("rejoin pressed")
-                    return address
+                    return SHOULD_REJOIN
                 elif backToLogin.on_mousebuttondown(event.pos):
-                    print("back to login")
-                    return 0
+                    return not SHOULD_REJOIN
         screen.fill(INDIGO)
         button_rejoin.draw(screen)
         backToLogin.draw(screen)

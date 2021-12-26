@@ -5,7 +5,7 @@ class TextBox(pg.Rect):
     def __init__(self, x, y, w, h, matcher = None):
         pg.Rect.__init__(self, x, y, w, h)
         self.font = pg.font.Font(asset('CaviarDreams.ttf'), 18)
-        self.text_input = ''
+        self.text_input = '18.218.4.58'
         self.text = self.font.render(self.text_input, True, BLACK)
         self.active = False
         self.matcher = matcher
