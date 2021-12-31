@@ -12,7 +12,7 @@ def endScreen(screen):
     while not done:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                sys.exit(0)
+                return None
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if button_rejoin.collidepoint(event.pos):
                     button_rejoin.active = True
