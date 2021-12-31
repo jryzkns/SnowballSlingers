@@ -18,7 +18,7 @@ def loginPage(screen):
     while not done:
         for event in pg.event.get():
             if event.type == pg.QUIT:
-                sys.exit(0)
+                return None
             elif event.type == pg.MOUSEBUTTONDOWN:
                 input_box.on_mousebuttondown(event.pos)
                 if button.on_mousebuttondown(event.pos):
@@ -34,4 +34,4 @@ def loginPage(screen):
         input_box.draw(screen)
         button.draw(screen)
         pg.display.flip()
-        
+      

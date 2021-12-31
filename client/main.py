@@ -19,6 +19,9 @@ with zmq.Context() as zmq_ctx:
     while not should_stop:
         if not rejoin:
             address = loginPage(game_win)
+            should_stop = address is None
+        if should_stop:
+            break
         player_uuid = uuid.uuid4().hex
         Connection.connect(zmq_ctx, player_uuid, address)
         pg.display.set_caption(f'Playing as: {player_uuid}')
