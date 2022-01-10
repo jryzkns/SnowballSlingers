@@ -6,7 +6,7 @@ try:
 except Exception:
     BASE_PATH = abspath(".")
 
-res = (600, 300)
+res = (900, 450)
 
 UTF8      = 'utf-8'
 PORT_CONN = '5555'

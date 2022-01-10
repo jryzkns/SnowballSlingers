@@ -1,6 +1,6 @@
 object Definitions {
-    val _world_width = 600
-    val _world_height = 300
+    val _world_width = 900
+    val _world_height = 450
     val _world_padding = 50
     val _world_left = _world_padding
     val _world_top = _world_padding
