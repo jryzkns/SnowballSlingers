@@ -36,9 +36,9 @@ docker-compose up client
 ```
 Otherwise, the only requirements to running the client is `pyzmq` and `pygame`, both can be installed through `pip`. 
 
-If you are on Windows, I have a packaged client executable that you can [download](https://www.jryzkns.tk/SnowballSlingers.zip) and run. 
+We have the executables for both Windows and Linux on [Github Releases](https://github.com/jryzkns/snowballslingers/releases).
 
-From the location where the game is run, one can create a `connect_loc.txt` which specifies the location of the server that the client tries to connect to. If it is not found, it will default the server location to `localhost`. This file as presented in this repo is `localhost` for docker purposes. However, in the downloaded executable it is `18.218.4.58`: I have a copy of the server running on an AWS ec2 instance. If you would like to actually play the game, I would recommend asking someone else to grab the client and connect to that server with you and have an intense snowball fight ;)
+There is a copy of the game server running at `18.218.4.58`. If you would like to actually play the game, I would recommend asking someone else to grab the client and connect to that server with you and have an intense snowball fight ;)
 
 ### game server
 
