@@ -57,7 +57,8 @@ class GameSession:
                 if r is not None:
                     p_name = r.group(1)
                     if p_name in game_objs:
-                        particles.emit(30, game_objs[p_name].x, game_objs[p_name].y)
+                        sb = game_objs[p_name]
+                        particles.emit( 50, sb.x, sb.y, sb.direction())
                         del game_objs[p_name]
                     continue
 

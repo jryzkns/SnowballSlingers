@@ -1,6 +1,6 @@
 import pygame as pg
 from pygame.freetype import Font
-from math import sin
+from math import sin, atan2
 
 from definitions import *
 from utils import *
@@ -69,5 +69,13 @@ class Player(Entity):
                                             self.y - (PLAYER_HEIGHT//2 + 10) + self.marker_offset))
 
 class Snowball(Entity):
+    def __init__(self, uuid, x, y):
+        Entity.__init__(self, uuid, x, y)
+        self.px, self.py = x, y
+    def goto(self, x, y):
+        self.px, self.py = self.x, self.y
+        self.x, self.y = x, y
     def draw(self, surf):
         pg.draw.circle(surf, WHITE, (self.x, self.y), 5)
+    def direction(self):
+        return atan2(self.y - self.py, self.x - self.px)
