@@ -4,11 +4,10 @@ import zmq
 import uuid
 import pygame as pg
 
-from end import endScreen
 from definitions import *
-from gameSession import GameSession
 from connection import Connection
-from login import loginPage
+from gameSession import GameSession
+from prePostSessions import loginPage, endScreen
 
 pg.init()
 game_win = pg.display.set_mode(res)
