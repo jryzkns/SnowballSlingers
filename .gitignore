@@ -11,3 +11,6 @@ backlog
 **/dist/
 **/build/
 **/*.spec
+
+# VIM FILES
+**/*.swp
