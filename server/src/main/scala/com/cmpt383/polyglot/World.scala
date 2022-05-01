@@ -32,13 +32,27 @@ class World {
 
     def is_registered(name : String) : Boolean = _players.contains(name)
 
+    def process_register( msg : String ) : String = {
+        val registered = is_registered( msg )
+        if ( registered ) {
+            deregister_player( msg )
+        } else {
+            register_player( msg )
+        }
+        if ( registered ) {
+            "Hello"
+        } else {
+            "Goodbye"
+        }
+    }
+
     def get_uuid() : String = java.util.UUID.randomUUID.toString.replace("-", "")
 
     private val msg_regex = raw"([\da-f]{32})-(.*)".r
     private val cast_regex = raw"cast-\((\d{1,3}),\s+(\d{1,3})\)".r
     private val click_regex = raw"click-\((\d{1,3}),\s+(\d{1,3})\)".r
 
-    def process_incoming( msg : String) : Unit = {
+    def process_incoming( msg : String ) : Unit = {
         msg match {
             case msg_regex(player, body) => {
                 if (!is_registered(player)) { return }

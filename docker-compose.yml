@@ -9,7 +9,7 @@ services:
     image: server
     volumes:
       - ./server:/server
-    entrypoint: 
+    entrypoint:
       ["/bin/sh", "-c", "cd server && mvn package && mvn exec:java"]
   client:
     build: ./client/
@@ -23,7 +23,7 @@ services:
     network_mode: host
     depends_on:
       - server
-    entrypoint: 
+    entrypoint:
       ["/bin/sh", "-c", "cd client && python3 -u main.py"]
   client_extra:
     build: ./client/
@@ -37,7 +37,7 @@ services:
     network_mode: host
     depends_on:
       - server
-    entrypoint: 
+    entrypoint:
       ["/bin/sh", "-c", "cd client && python3 -u main.py"]
     # https://stackoverflow.com/a/28395350/12275558
     # remember to run `xhost +local:docker`
