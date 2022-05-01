@@ -1,6 +1,8 @@
 import pygame as pg
 from definitions import *
 
+from utils import *
+
 class WidgetStyles:
     def __init__( self,
                   fontttf='CaviarDreams.ttf',
@@ -9,6 +11,7 @@ class WidgetStyles:
                   outline_thickness=2
     ):
         self.font = pg.font.Font( asset( fontttf ), fontsize )
+        self.texth = self.font.render( " ", True, WHITE ).get_rect().h
         self.outline_thickness=outline_thickness
         self.fontcolor = fontcolor
 
@@ -51,7 +54,7 @@ class TextBox( pg.Rect, WidgetStyles ):
         self.valid = self.matcher.match( self.text_input ) is not None
 
     def draw( self, screen ):
-        screen.blit( self.text, self.topleft )
+        screen.blit( self.text, translate( *self.topleft, 5, ( self.h - self.texth )//2 ) )
         pg.draw.rect( screen, ( ORANGE if self.active else BANANA ), self, self.outline_thickness )
 
 class Button( pg.Rect, WidgetStyles ):
@@ -65,5 +68,5 @@ class Button( pg.Rect, WidgetStyles ):
         return self.active and pg.mouse.get_pressed()[ 0 ] and self.collidepoint( *position )
 
     def draw( self, screen ):
-        screen.blit( self.text, self.topleft )
+        screen.blit( self.text, translate( *self.topleft, 5, ( self.h - self.texth )//2 ) )
         pg.draw.rect(screen, ( ORANGE if self.active else BANANA ), self, self.outline_thickness )
