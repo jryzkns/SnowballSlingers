@@ -6,11 +6,11 @@ class ConnectionManager:
     def __init__( self, zmq_ctx ):
         self.ctx = zmq_ctx
 
-    def do_connect( self, address, player_id ):
-        self.addr, self.pid = address, player_id
+    def do_connect( self, address, player_id, player_name ):
+        self.addr, self.pid, self.name = address, player_id, player_name
         skt_conn = self.ctx.socket( zmq.REQ )
         skt_conn.connect( f'tcp://{self.addr}:{PORT_CONN}' )
-        skt_conn.send( self.pid.encode( UTF8 ) )
+        skt_conn.send( f"{self.pid}:{self.name}".encode( UTF8 ) )
 
     def do_init_session( self ):
         self.skt_hand = self.ctx.socket( zmq.PUSH )
