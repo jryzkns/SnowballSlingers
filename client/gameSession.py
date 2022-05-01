@@ -5,12 +5,12 @@ from definitions import *
 from entity import Player, Snowball
 from particles import Particles
 
-player_dis_rgx = re.compile( r'([\da-f]{32})-player-disconn' )
-player_hit_rgx = re.compile( r'([\da-f]{32})-player-hit' )
-player_ack_rgx = re.compile( r'([\da-f]{32})-player-ack' )
-player_pos_rgx = re.compile( r'([\da-f]{32})-player-\((\d{1,3}),\s+(\d{1,3})\)' )
-snowball_pos_rgx = re.compile( r'([\da-f]{32})-snowball-\((\d{1,3}),\s+(\d{1,3})\)' )
-snowball_ded_rgx = re.compile( r'([\da-f]{32})-snowball-gone' )
+player_ack_rgx = re.compile( r'^([\da-f]{32})-ack$' )
+player_dis_rgx = re.compile( r'^([\da-f]{32})-disconn$' )
+player_hit_rgx = re.compile( r'^([\da-f]{32})-hit$' )
+player_pos_rgx = re.compile( r'^([\da-f]{32})-([\d\w]{1,12})-\((\d{1,3}),\s+(\d{1,3})\)$' )
+snowball_pos_rgx = re.compile( r'^([\da-f]{32})-\((\d{1,3}),\s+(\d{1,3})\)$' )
+snowball_ded_rgx = re.compile( r'^([\da-f]{32})-d$' )
 
 def gameSession( game_win, cm ):
 
@@ -22,7 +22,7 @@ def gameSession( game_win, cm ):
     game_clock.tick()
 
     cm.do_init_session()
-    player_uuid = cm.pid
+    my_uuid = cm.pid
 
     should_stop = False
     while not should_stop:
@@ -31,55 +31,55 @@ def gameSession( game_win, cm ):
 
             r = snowball_pos_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
+                p_id = r.group( 1 )
                 p_x, p_y = int( r.group( 2 ) ), int( r.group( 3 ) )
-                if p_name not in game_objs:
-                    game_objs[ p_name ] = Snowball( p_name, p_x, p_y )
-                game_objs[ p_name ].goto( p_x, p_y )
+                if p_id not in game_objs:
+                    game_objs[ p_id ] = Snowball( p_id, p_x, p_y )
+                game_objs[ p_id ].goto( p_x, p_y )
                 continue
 
             r = snowball_ded_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
-                if p_name in game_objs:
-                    sb = game_objs[ p_name ]
+                p_id = r.group( 1 )
+                if p_id in game_objs:
+                    sb = game_objs[ p_id ]
                     particles.emit( 50, sb.x, sb.y, sb.direction() )
-                    del game_objs[ p_name ]
+                    del game_objs[ p_id ]
                 continue
 
             r = player_ack_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
-                if p_name not in game_objs:
+                p_id = r.group( 1 )
+                if p_id not in game_objs:
                     continue
-                game_objs[ p_name ].cd_countdown = CD_DURATION
+                game_objs[ p_id ].cd_countdown = CD_DURATION
                 continue
 
             r = player_dis_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
-                if p_name == player_uuid:
+                p_id = r.group( 1 )
+                if p_id == my_uuid:
                     return
-                if p_name in game_objs:
-                    del game_objs[ p_name ]
+                if p_id in game_objs:
+                    del game_objs[ p_id ]
                 continue
 
             r = player_pos_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
-                p_x, p_y = int( r.group( 2 ) ), int( r.group( 3 ) )
-                if p_name not in game_objs:
-                    game_objs[ p_name ] = Player( p_name, p_x, p_y,
-                                                  p_name == player_uuid )
-                game_objs[ p_name ].goto( p_x, p_y )
+                player_id, player_name = r.group( 1 ), r.group( 2 )
+                p_x, p_y = int( r.group( 3 ) ), int( r.group( 4 ) )
+                if player_id not in game_objs:
+                    game_objs[ player_id ] = Player( player_id, player_name, p_x, p_y,
+                                                     player_id == my_uuid )
+                game_objs[ player_id ].goto( p_x, p_y )
                 continue
 
             r = player_hit_rgx.match( msg )
             if r:
-                p_name = r.group( 1 )
-                if p_name not in game_objs:
+                p_id = r.group( 1 )
+                if p_id not in game_objs:
                     continue
-                game_objs[ p_name ].hit()
+                game_objs[ p_id ].hit()
                 continue
 
         for event in pg.event.get():

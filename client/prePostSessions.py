@@ -40,7 +40,7 @@ def loginPage( screen, cm ):
         pg.display.flip()
 
     player_uuid = uuid.uuid4().hex
-    cm.do_connect( server_location, player_uuid )
+    cm.do_connect( server_location, player_uuid, input_box.text_input )
     pg.display.set_caption( f'{server_location} : {input_box.text_input} : {player_uuid}' )
 
     return 0

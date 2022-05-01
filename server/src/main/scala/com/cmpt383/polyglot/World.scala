@@ -4,53 +4,59 @@ import scala.math.hypot
 
 class World {
 
+    private val msg_regex = raw"([\da-f]{32})-(.*)".r
+    private val cast_regex = raw"cast-\((\d{1,3}),\s+(\d{1,3})\)".r
+    private val click_regex = raw"click-\((\d{1,3}),\s+(\d{1,3})\)".r
+    private val register_regex = raw"([\da-f]{32}):([\d\w]{1,12})".r
+
     private var _refresh_time = System.currentTimeMillis()
 
-    private var _players = scala.collection.mutable.Map[String, Player]()
-    private var _snowballs = scala.collection.mutable.MutableList[Snowball]()
-    private val _updates = scala.collection.mutable.Queue[String]()
+    private var _players = scala.collection.mutable.Map[ String, Player ]()
+    private var _snowballs = scala.collection.mutable.MutableList[ Snowball ]()
+    private val _updates = scala.collection.mutable.Queue[ String ]()
 
     private val _rng = new scala.util.Random
-    def rand_range(min: Int, max: Int) : Int = min + _rng.nextInt((max - min) + 1)
+    def rand_range( min: Int, max: Int ) : Int = min + _rng.nextInt( ( max - min ) + 1 )
 
-    def register_player (name : String) : Unit = {
-        val player_x = rand_range(Definitions._world_left, Definitions._world_right)
-        val player_y = rand_range(Definitions._world_top , Definitions._world_bottom)
-        _players += (name -> new Player(name, player_x, player_y, None))
-        println(s"$name is now registered in the game!")
+    def register_player ( id : String, name : String ) : Unit = {
+        val player_x = rand_range( Definitions._world_left, Definitions._world_right )
+        val player_y = rand_range( Definitions._world_top , Definitions._world_bottom )
+        _players += ( id -> new Player( id, name, player_x, player_y, None ) )
+        println( s"$id is now registered in the game as $name!" )
     }
 
-    def deregister_player (name : String) : Unit = {
-        if (_players.contains(name)) {
-            _players -= name
-            _updates.enqueue(s"$name-player-disconn")
-            println(s"Player $name have left the game")
+    def deregister_player ( id : String ) : Unit = {
+        if ( _players.contains( id ) ) {
+            _players -= id
+            _updates.enqueue(s"$id-disconn")
+            println(s"Player $id have left the game")
         } else {
-            println(s"No Player named $name was here to begin with")
+            println(s"Player $id was not here to begin with")
         }
     }
 
-    def is_registered(name : String) : Boolean = _players.contains(name)
+    def is_registered( id : String ) : Boolean = _players.contains( id )
 
     def process_register( msg : String ) : String = {
-        val registered = is_registered( msg )
-        if ( registered ) {
-            deregister_player( msg )
-        } else {
-            register_player( msg )
-        }
-        if ( registered ) {
-            "Hello"
-        } else {
-            "Goodbye"
+        msg match {
+            case register_regex ( uuid, name ) => {
+                val registered = is_registered( uuid )
+                if ( registered ) {
+                    deregister_player( uuid )
+                } else {
+                    register_player( uuid, name )
+                }
+                if ( registered ) {
+                    return "Hello"
+                } else {
+                    return "Goodbye"
+                }
+            }
+            case _ => return "wtf bro"
         }
     }
 
     def get_uuid() : String = java.util.UUID.randomUUID.toString.replace("-", "")
-
-    private val msg_regex = raw"([\da-f]{32})-(.*)".r
-    private val cast_regex = raw"cast-\((\d{1,3}),\s+(\d{1,3})\)".r
-    private val click_regex = raw"click-\((\d{1,3}),\s+(\d{1,3})\)".r
 
     def process_incoming( msg : String ) : Unit = {
         msg match {
@@ -58,9 +64,9 @@ class World {
                 if (!is_registered(player)) { return }
                 body match {
                     case cast_regex(x, y) =>
-                        var caster = _players(player)
+                        var caster = _players( player )
                         if (caster.attempt_cast()) {
-                            _updates.enqueue(s"$player-player-ack")
+                            _updates.enqueue(s"$player-ack")
                             _snowballs += new Snowball( get_uuid(),
                                 player, caster.x, caster.y, (x.toInt, y.toInt))
                         }
@@ -85,7 +91,7 @@ class World {
                 if ( this_caster != p_name && dist < Definitions._snowball_player_collide_dist) {
                     snowball.lifetime = 0
                     player.hp = math.max(0, player.hp - 1)
-                    _updates.enqueue(s"$p_name-player-hit")
+                    _updates.enqueue(s"$p_name-hit")
                 }
             }})
             // check if this snowbal lcollides with any other snowballs
@@ -103,7 +109,7 @@ class World {
         })
 
         _snowballs.filter(_.lifetime == 0) foreach {
-            snowball => _updates.enqueue(s"${snowball.uuid}-snowball-gone")
+            snowball => _updates.enqueue(s"${snowball.uuid}-d")
         }
 
         _snowballs = _snowballs.filterNot(_.lifetime == 0)
@@ -120,11 +126,11 @@ class World {
     def tick_updates() : java.util.List[String] = {
         var out_updates = List[String]()
         out_updates = _updates.dequeueAll(_ => true).toList ::: out_updates
-        out_updates = (for ((name, player) <- _players) yield
-                        s"${name}-player-(${player.x.toInt}, ${player.y.toInt})"
+        out_updates = (for ((id, player) <- _players) yield
+                        s"${id}-${player.name}-(${player.x.toInt}, ${player.y.toInt})"
                         ).toList ::: out_updates
         out_updates = (for (snowball <- _snowballs) yield
-                        s"${snowball.uuid}-snowball-(${snowball.x.toInt}, ${snowball.y.toInt})"
+                        s"${snowball.uuid}-(${snowball.x.toInt}, ${snowball.y.toInt})"
                         ).toList ::: out_updates
         out_updates.asJava
     }

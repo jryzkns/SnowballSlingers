@@ -24,6 +24,7 @@ WHITE  = ( 255, 255, 255 )
 YELLOW = ( 255, 255,   0 )
 BANANA = ( 227, 207,  87 )
 ORANGE = ( 255, 128,   0 )
+GREEN  = (   0, 255,   0 )
 
 PLAYER_WIDTH  = 15
 PLAYER_HEIGHT = 30
