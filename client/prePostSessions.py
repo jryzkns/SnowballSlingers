@@ -6,14 +6,16 @@ import uuid
 import connection
 from widgets import Button, TextBox, TextMultiline
 
+server_location = 'localhost'
+
 def loginPage( screen, cm ):
-    address_regex = re.compile( r"^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|localhost)$" )
-    input_box = TextBox( 50, 80, 200, 32, address_regex )
+    username_regex = re.compile( r"^[\d\w]{1,12}$" )
+    input_box = TextBox( 50, 80, 200, 32, username_regex )
     input_box.active = True
-    button = Button( 90, 30, "Connect", ( 50, 130 ), start_active=False )
-    text = TextMultiline( [ "Welcome to Snowball Slingers.",
-                            "Please enter the server IP address into the text box below.",
-                            "Click the Connect button after you have entered the IP address",
+    button = Button( 90, 30, "Join", ( 50, 130 ), start_active=False )
+    text = TextMultiline( [ "Welcome to Snowball Slingers",
+                            "Please enter an alias to join the game ( 12 characters max )",
+                            "Once ready, click the Join button or press the enter key",
                           ], 20, 10 )
 
     should_stop = False
@@ -38,7 +40,7 @@ def loginPage( screen, cm ):
         pg.display.flip()
 
     player_uuid = uuid.uuid4().hex
-    cm.do_connect( input_box.text_input, player_uuid )
-    pg.display.set_caption( f'{input_box.text_input} : {player_uuid}' )
+    cm.do_connect( server_location, player_uuid )
+    pg.display.set_caption( f'{server_location} : {input_box.text_input} : {player_uuid}' )
 
     return 0
