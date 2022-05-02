@@ -7,6 +7,8 @@ class Player (
     var y : Double,
     var intent : Option[ ( Int, Int ) ],
 ) {
+
+    var killer : Option[ String ] = None
     private var _cd_countdown = 0.0
     var hp = 3
 
