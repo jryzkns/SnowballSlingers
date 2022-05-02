@@ -11,6 +11,7 @@ class World {
 
     private var _refresh_time = System.currentTimeMillis()
 
+    private var _announcer = new Announcer()
     private var _players = scala.collection.mutable.Map[ String, Player ]()
     private var _snowballs = scala.collection.mutable.MutableList[ Snowball ]()
     private val _updates = scala.collection.mutable.Queue[ String ]()
@@ -22,11 +23,14 @@ class World {
         val player_x = rand_range( Definitions._world_left, Definitions._world_right )
         val player_y = rand_range( Definitions._world_top , Definitions._world_bottom )
         _players += ( id -> new Player( id, name, player_x, player_y, None ) )
+        _announcer.register_join_event( name )
         println( s"$id is now registered in the game as $name!" )
     }
 
     def deregister_player ( id : String ) : Unit = {
         if ( _players.contains( id ) ) {
+            // TODO: enable this once player death is decoupled from disconnect
+            // _announcer.register_quit_event( _players[ id ].name )
             _players -= id
             _updates.enqueue( s"$id-disconn" )
             println( s"Player $id have left the game" )
@@ -96,6 +100,13 @@ class World {
                 if ( this_caster != p_name && dist < Definitions._snowball_player_collide_dist ) {
                     snowball.lifetime = 0
                     player.hp = math.max( 0, player.hp - 1 )
+                    if ( player.hp == 0 ) {
+                        _players.get( this_caster ) match {
+                            case Some( killer ) =>
+                                player.killer = Some( killer.name )
+                            case None => {}
+                        }
+                    }
                     _updates.enqueue( s"$p_name-hit" )
                 }
             } } )
@@ -121,6 +132,11 @@ class World {
 
         _players foreach ( { case ( p_name, player ) => {
             if ( player.hp == 0 ) {
+                player.killer match {
+                    case Some( killer ) =>
+                        _announcer.register_kill_event( killer, player.name )
+                    case None => {}
+                }
                 deregister_player( p_name )
             }
         } } )
