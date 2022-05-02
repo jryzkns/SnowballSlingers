@@ -33,3 +33,13 @@ PLAYER_RENDER_PADDING = 1
 CD_DURATION = 0.5
 
 asset = lambda fn : join( BASE_PATH, 'assets', fn )
+
+JOIN = 'j'
+KILL = 'k'
+QUIT = 'q'
+
+RIBBON_W = 230
+RIBBON_H = 30
+RIBBON_SPACING = 5
+MAX_RIBBONS = 6
+RIBBON_TIME = 5
