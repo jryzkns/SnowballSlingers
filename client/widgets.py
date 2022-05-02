@@ -5,7 +5,7 @@ from utils import *
 
 class WidgetStyles:
     def __init__( self,
-                  fontttf='CaviarDreams.ttf',
+                  fontttf='orange-kid.regular.ttf',
                   fontsize=18,
                   fontcolor=BLACK,
                   outline_thickness=2

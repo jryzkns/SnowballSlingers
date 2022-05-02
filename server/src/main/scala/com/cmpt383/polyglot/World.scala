@@ -153,6 +153,7 @@ class World {
         out_updates = ( for ( snowball <- _snowballs ) yield
                         s"${snowball.uuid}-(${snowball.x.toInt}, ${snowball.y.toInt})"
                         ).toList ::: out_updates
+        out_updates = _announcer.emit_announcements() ::: out_updates
         out_updates.asJava
     }
 }
