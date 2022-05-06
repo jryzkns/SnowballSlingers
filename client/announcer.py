@@ -23,7 +23,7 @@ class Announcer:
         self.font.render_to( canvas,
                              (10, ( RIBBON_H - self.texth )/2 ),
                              f"{player:12} LEFT THE FIGHT!",
-                             WHITE )
+                             BLACK )
         self.buffer += canvas,
     def register_kill( self, killer, killee ):
         canvas = pg.Surface( ( RIBBON_W, RIBBON_H ), pg.SRCALPHA )
@@ -31,7 +31,7 @@ class Announcer:
         self.font.render_to( canvas,
                              (10, ( RIBBON_H - self.texth )/2 ),
                              f"{killer:12} KILLED {killee:12}",
-                             WHITE )
+                             RED )
         self.buffer += canvas,
     def register_event( self, action, subject ):
         self.timer = 0
