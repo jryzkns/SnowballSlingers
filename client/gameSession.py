@@ -2,6 +2,7 @@ import pygame as pg
 import re
 from definitions import *
 
+from announcer import Announcer
 from entity import Player, Snowball
 from particles import Particles
 
@@ -11,6 +12,7 @@ player_hit_rgx = re.compile( r'^([\da-f]{32})-hit$' )
 player_pos_rgx = re.compile( r'^([\da-f]{32})-([\d\w]{1,12})-\((\d{1,3}),\s+(\d{1,3})\)$' )
 snowball_pos_rgx = re.compile( r'^([\da-f]{32})-\((\d{1,3}),\s+(\d{1,3})\)$' )
 snowball_ded_rgx = re.compile( r'^([\da-f]{32})-d$' )
+announcer_rgx = re.compile ( r'^a-([kjq]).+' )
 
 def gameSession( game_win, cm ):
 
@@ -23,6 +25,8 @@ def gameSession( game_win, cm ):
 
     cm.do_init_session()
     my_uuid = cm.pid
+
+    announcer = Announcer( res[ 0 ]//2, 100 )
 
     should_stop = False
     while not should_stop:
@@ -82,6 +86,12 @@ def gameSession( game_win, cm ):
                 game_objs[ p_id ].hit()
                 continue
 
+            r = announcer_rgx.match( msg )
+            if r:
+                action = r.group( 1 )
+                announcer.register_event( action, msg[ 4: ].split( '-' ) )
+                continue
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 return
@@ -103,6 +113,7 @@ def gameSession( game_win, cm ):
         game_win.fill( INDIGO )
 
         dt = game_clock.get_time()/1000.
+        announcer.update( dt )
         particles.update( dt )
         for entity in game_objs.values():
             if hasattr( entity, 'update' ):
@@ -110,6 +121,8 @@ def gameSession( game_win, cm ):
             entity.draw( game_win )
 
         particles.draw( game_win )
+
+        announcer.draw( game_win )
 
         pg.display.flip()
         game_clock.tick()

@@ -27,7 +27,7 @@ class Player( Entity ):
             self.marker_sprite = pg.image.load( asset( 'marker.png' ) )
             self.marker_offset = 0
 
-        self.font = Font( asset( 'CaviarDreams.ttf' ), 12 )
+        self.font = Font( asset( 'orange-kid.regular.ttf' ), 12 )
         self.ns, _ = self.font.render( self.name, True, GREEN )
         self.textw, self.texth = self.ns.get_size()
 
